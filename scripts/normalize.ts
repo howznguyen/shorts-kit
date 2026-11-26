@@ -16,13 +16,16 @@ const T = loadThresholds();
 const promo = isVoiceless(id);
 const I = (promo ? T.promoLoudnessLUFS : T.loudnessLUFS) as number;
 const TP = (promo ? T.promoTruePeakMaxDb : T.truePeakMaxDb) as number;
+/** AAC re-encoding overshoots the true peak by 0.2–0.6 dB, so aim below the ceiling (a −1 dBTP target once came out at −0.6 after encode). */
+const AAC_MARGIN_DB = 0.8;
+const TP_AIM = TP - AAC_MARGIN_DB;
 const LRA = 11;
 const rate = String(T.audioSampleRate ?? 48000);
 const src = join(outDir(id), `${id}.mp4`);
 const dst = join(outDir(id), `${id}-loud.mp4`);
 if (!existsSync(src)) die(`out/${id}/${id}.mp4 not found. Run \`bun run render ${id}\` first.`);
 
-const pass1 = await run("ffmpeg", ["-hide_banner", "-nostats", "-i", src, "-map", "0:a:0", "-af", `loudnorm=I=${I}:TP=${TP}:LRA=${LRA}:print_format=json`, "-f", "null", "-"], {
+const pass1 = await run("ffmpeg", ["-hide_banner", "-nostats", "-i", src, "-map", "0:a:0", "-af", `loudnorm=I=${I}:TP=${TP_AIM}:LRA=${LRA}:print_format=json`, "-f", "null", "-"], {
   timeoutMs: 600_000,
 });
 if (pass1.code !== 0) die(`loudness measurement failed:\n${pass1.stderr.slice(-1500)}`);
@@ -36,7 +39,7 @@ try {
 console.log(`measured ${id}.mp4: I=${m!.input_i} LUFS, TP=${m!.input_tp} dBTP, LRA=${m!.input_lra} LU`);
 
 const filter = [
-  `loudnorm=I=${I}:TP=${TP}:LRA=${LRA}`,
+  `loudnorm=I=${I}:TP=${TP_AIM}:LRA=${LRA}`,
   `measured_I=${m!.input_i}:measured_TP=${m!.input_tp}:measured_LRA=${m!.input_lra}`,
   `measured_thresh=${m!.input_thresh}:offset=${m!.target_offset}:linear=true:print_format=summary`,
 ].join(":");

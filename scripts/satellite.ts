@@ -75,7 +75,10 @@ const isPng = (b: Buffer) => b.subarray(0, 4).toString("hex") === "89504e47";
  * The server answers flat open-ocean tiles with a tiny palette PNG. ffmpeg's
  * concat demuxer reads every file with the first one's decoder, so a PNG among
  * JPEGs is silently dropped and every later tile shifts one place. Store every
- * tile as a real JPEG.
+ * tile as a real JPEG, in the same pixel format as EOX's own tiles (yuvj420p):
+ * a format change mid-stream makes ffmpeg rebuild the tile filter, and every
+ * tile after the first converted one comes out black. Seen on a coastal shot
+ * whose mosaic mixed open-ocean tiles with land tiles.
  */
 const ensureJpeg = async (file: string) => {
   const head = Buffer.alloc(4);
@@ -84,7 +87,7 @@ const ensureJpeg = async (file: string) => {
   if (!isPng(head)) return;
   const png = file.replace(/\.jpg$/, ".png");
   renameSync(file, png);
-  await must("ffmpeg", ["-v", "error", "-y", "-i", png, "-pix_fmt", "yuvj444p", "-q:v", "2", file], {timeoutMs: 20_000});
+  await must("ffmpeg", ["-v", "error", "-y", "-i", png, "-pix_fmt", "yuvj420p", "-q:v", "2", file], {timeoutMs: 20_000});
 };
 
 const fetchTile = async (z: number, x: number, y: number): Promise<TileResult> => {
@@ -134,7 +137,7 @@ const pool = async <T>(jobs: (() => Promise<T>)[], limit: number, onDone: (n: nu
 const fillerTile = async () => {
   const file = join(CACHE, "filler.jpg");
   if (!existsSync(file)) {
-    await must("ffmpeg", ["-v", "error", "-y", "-f", "lavfi", "-i", "color=c=0x0A1A2A:s=256x256", "-frames:v", "1", file], {timeoutMs: 20_000});
+    await must("ffmpeg", ["-v", "error", "-y", "-f", "lavfi", "-i", "color=c=0x0A1A2A:s=256x256", "-frames:v", "1", "-pix_fmt", "yuvj420p", file], {timeoutMs: 20_000});
   }
   return file;
 };
