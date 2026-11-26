@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.2.0 (2026-11-27)
+
+### Added
+- `bun run export <id> [--comp=X] [--h264] [--lines=<comp>] [--reuse]`: a video as layers for an editor in
+  `out/<id>/export/<comp>/`. Picture without captions (ProRes 422 HQ, or H.264 with `--h264`), the running
+  captions on transparency (ProRes 4444), voice, music and sfx as WAV stems (sounds a scene plays itself go with
+  sfx; a silent stem is left out), `captions.srt`, and an FCPXML 1.8 timeline with every layer in place and a
+  marker per scene, for DaVinci Resolve and Final Cut Pro. The templates draw one layer per render
+  (`src/shared/frame/layer.ts`, read from the input props), so no video code changes. Checked on the example:
+  the layers composite back to the normal render and the stems sum to its mix.
+
 ## 2.1.0 (2026-11-27)
 
 ### Fixed
