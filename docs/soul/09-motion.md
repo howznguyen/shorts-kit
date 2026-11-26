@@ -124,3 +124,39 @@ does the ground keep switching colour with no pattern?"
 
 Values that follow the script are a **keyed table**, each key tied to a sentence,
 interpolated between. Adding a scene edits the table, not seven formulas.
+
+## 12e. GSAP runs on Remotion's clock, never its own
+
+GSAP is allowed (`src/shared/motion/gsap.ts`) for what `interpolate` makes tedious:
+nested timelines, staggers, a large easing set, and SplitText. It **describes** motion;
+Remotion **plays** it. A render opens frames out of order and in several tabs at once, so
+anything driven by GSAP's ticker gives a different picture on each run.
+
+- **One paused timeline per component, rebuilt and seeked every frame.** Use
+  `useGsap((tl, root) => …)`. It reverts the DOM, builds the timeline and seeks it from 0 on
+  every render, with `lazy: false`. Building once and seeking frame after frame was not enough:
+  GSAP leaves inline styles that depend on which frames the tab rendered before, and a lazy
+  first render lands on the next animation frame, racing the screenshot. Both made renders
+  differ by a few pixels.
+- **The time unit is frames.** `duration: 20` is 20 frames; position tweens at word onsets
+  (`wordAt`, `sceneFrom`, `voice.json`), never at a hand-typed second (§12a).
+- **No free tweens, no `repeat: -1`, no ticker, no ScrollTrigger, no callbacks, no
+  `play()`.** A seek is not playback: callbacks and their side effects do not replay.
+  `bun run check` (`scripts/check-gsap.ts`) rejects them, and any `gsap` import outside
+  `src/shared/motion/gsap.ts`.
+- **GSAP owns the properties it animates.** Do not also set them from React `style`:
+  the next render overwrites GSAP's inline value for one frame. Text that SplitText splits
+  is static; React must never re-render it.
+- The other §12 rules still apply. GSAP's `*.out` eases land at zero speed; a camera move
+  still uses `camEase` or a `"none"` coast.
+- **What is exact and what is not.** Transforms, opacity, SplitText, TextPlugin, MotionPath,
+  Physics2D and CustomWiggle give the same values on every run. DrawSVG and MorphSVG read SVG
+  geometry from Chrome (`getTotalLength`), which can differ in the last digit between tabs
+  (1891.36 vs 1891.37), and SVG shapes crossing the frame edge can rasterise a few pixels off
+  by up to 5/255. Measured on `gsap-plugin-reel`: up to 17 of 300 PNG frames differ, PSNR
+  above 85 dB, invisible. Do not use a byte-identical render as a gate for shots that use them.
+- Proof, after changing the hook: render a demo as PNGs (`--sequence --image-format=png`) at
+  `--concurrency=1` and `4` and compare md5s; `gsap-split-words` gives 0 of 120 different.
+  Compare PNGs, not mp4 frames: one changed frame changes every later frame after x264.
+- Licence: GSAP is not MIT but Webflow's free "Standard No Charge" licence
+  (https://gsap.com/community/standard-license/).
