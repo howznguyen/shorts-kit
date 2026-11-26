@@ -2,6 +2,7 @@ import React from "react";
 import {interpolate, useCurrentFrame} from "remotion";
 import {useFormat} from "../format";
 import {FONT} from "../theme";
+import {Avatar} from "./Avatar";
 
 /**
  * Fixed HUD strip across the top of a chaptered explainer: channel name, the
@@ -38,15 +39,21 @@ export const ChapterHud: React.FC<{
   accent: string;
   /** Small diagram; gets the chapter index. Rendered in a 380x72 slot (scaled 0.85). */
   diagram?: (chapter: number) => React.ReactNode;
-}> = ({channel, chapters, chapter, chapterProgress, changedAt = -100, accent, diagram}) => {
+  /** Channel avatar (`public/img/avatar.jpg`) left of the channel name. Default off. */
+  brand?: boolean;
+  /** Avatar diameter, px; the HUD is 132 tall, so up to about 104 fits above the progress bar. */
+  avatar?: number;
+}> = ({channel, chapters, chapter, chapterProgress, changedAt = -100, accent, diagram, brand = false, avatar = 92}) => {
   const frame = useCurrentFrame();
   const box = useHudBox();
   const c = chapters[chapter];
+  const L = brand ? 16 + avatar + 16 : 24;
   const swap = interpolate(frame - changedAt, [0, SWAP], [0, 1], {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
   return (
     <div style={{position: "absolute", left: box.left, top: box.top, width: box.width, height: HUD_H, boxSizing: "border-box", borderRadius: 14, background: "rgba(9,14,20,0.84)", border: "1px solid rgba(255,255,255,0.12)", fontFamily: FONT.sans, color: "#fff", overflow: "hidden"}}>
-      <div style={{position: "absolute", left: 24, top: 14, fontFamily: FONT.mono, fontSize: 20, letterSpacing: 1.5, color: "rgba(255,255,255,0.7)", textTransform: "uppercase", whiteSpace: "nowrap"}}>{channel}</div>
-      <div style={{position: "absolute", left: 24, top: 46, display: "flex", alignItems: "baseline", gap: 14, whiteSpace: "nowrap", opacity: swap, transform: `translateY(${(1 - swap) * 10}px)`}}>
+      {brand ? <div style={{position: "absolute", left: 16, top: Math.max(6, (HUD_H - 22 - avatar) / 2)}}><Avatar size={avatar} ring={accent} shadow={false} /></div> : null}
+      <div style={{position: "absolute", left: L, top: 14, fontFamily: FONT.mono, fontSize: 20, letterSpacing: 1.5, color: "rgba(255,255,255,0.7)", textTransform: "uppercase", whiteSpace: "nowrap"}}>{channel}</div>
+      <div style={{position: "absolute", left: L, top: 46, display: "flex", alignItems: "baseline", gap: 14, whiteSpace: "nowrap", opacity: swap, transform: `translateY(${(1 - swap) * 10}px)`}}>
         <span style={{fontFamily: FONT.mono, fontSize: 28, fontWeight: 700, color: accent}}>{c.num}</span>
         <span style={{fontSize: 34, fontWeight: 800, letterSpacing: 1.5, textTransform: "uppercase"}}>{c.label}</span>
       </div>
