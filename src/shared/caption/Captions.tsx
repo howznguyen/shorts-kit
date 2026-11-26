@@ -77,6 +77,17 @@ export const chunkWords = (words: VoiceWord[]): Chunk[] => {
   return chunks;
 };
 
+/** Replace a masked word, keeping its capitalisation and the punctuation around it. */
+export const maskWord = (text: string, mask?: Record<string, string>): string => {
+  if (!mask) return text;
+  const m = text.match(/^([^\p{L}\p{N}]*)([\p{L}\p{N}]+)([^\p{L}\p{N}]*)$/u);
+  if (!m) return text;
+  const rep = mask[m[2].toLowerCase()];
+  if (rep === undefined) return text;
+  const cased = m[2][0] === m[2][0].toUpperCase() ? rep.charAt(0).toUpperCase() + rep.slice(1) : rep;
+  return m[1] + cased + m[3];
+};
+
 export const Captions: React.FC<{
   voice: Voice;
   palette: Palette;
@@ -87,6 +98,12 @@ export const Captions: React.FC<{
   maxWidth?: number;
   /** Show `lines[].caption` (second language) under the main caption (§7e). */
   secondLanguage?: boolean;
+  /**
+   * Strong words shown masked (§1b): spoken word, lower case, without punctuation → what the
+   * caption shows. The voice says the word; captions, like every on-frame text, never do.
+   * Case and trailing punctuation of the spoken word are kept.
+   */
+  mask?: Record<string, string>;
 }> = ({
   voice,
   palette,
@@ -95,6 +112,7 @@ export const Captions: React.FC<{
   bottom: bottomProp,
   maxWidth: maxWidthProp,
   secondLanguage = true,
+  mask,
 }) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
@@ -145,7 +163,7 @@ export const Captions: React.FC<{
             const speaking = t >= w.start && (next ? t < next.start : true);
             return (
               <span key={`${w.start}-${i}`} style={{color: speaking ? palette.accent : palette.text}}>
-                {w.text}
+                {maskWord(w.text, mask)}
                 {i < chunk.words.length - 1 ? " " : ""}
               </span>
             );

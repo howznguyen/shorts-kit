@@ -10,12 +10,18 @@
     "why": "hard platform ceiling: a YouTube upload over 3 minutes is not a Short (a 195.5 s video was published as a regular video)"
   },
   "targetDurationSeconds": {
-    "value": [60, 90],
+    "value": [
+      60,
+      90
+    ],
     "rule": "§3",
     "why": "soft pacing target; past ~90 s the edit starts to drag unless the content earns it"
   },
   "outroHoldSeconds": {
-    "value": [3, 4],
+    "value": [
+      3,
+      4
+    ],
     "rule": "§2",
     "why": "silent hold on the last frame so the viewer has a beat to share; a missing default once cut four videos at the last word"
   },
@@ -50,7 +56,11 @@
     "why": "about one information beat per 2.5 s keeps a 70-80 s video above 25 beats; does not apply to things that must be read"
   },
   "readingHoldSeconds": {
-    "value": {"oneImage": 5, "comparePair": 8, "tableOrTimeline": 6},
+    "value": {
+      "oneImage": 5,
+      "comparePair": 8,
+      "tableOrTimeline": 6
+    },
     "rule": "§3",
     "why": "a frame shown for 3.8 s drew 'the images flash by too fast'; comparing takes longer than looking"
   },
@@ -75,7 +85,10 @@
     "why": "past this, ledger details should move from the voice to the frame"
   },
   "captionWordsPerChunk": {
-    "value": [2, 4],
+    "value": [
+      2,
+      4
+    ],
     "rule": "§7",
     "why": "captions follow the ear; whole sentences on screen are a wall of text"
   },
@@ -110,7 +123,10 @@
     "why": "strictest platform caption area start (Reels)"
   },
   "safeRightPx": {
-    "value": {"x": 927, "fromY": 803},
+    "value": {
+      "x": 927,
+      "fromY": 803
+    },
     "rule": "§7a",
     "why": "strictest right button column: x from Reels, start height from TikTok"
   },
@@ -185,30 +201,86 @@
     "why": "unusual rates (96 kHz) are mishandled by uploaders"
   },
   "strongWords": {
-    "value": {"max": 0, "words": [], "allowedScenes": ["hook", "payoff"]},
+    "value": {
+      "max": 0,
+      "words": [],
+      "allowedScenes": [
+        "hook",
+        "payoff"
+      ],
+      "maskAs": "…"
+    },
     "rule": "§1b",
-    "why": "off by default; a channel may allow one strong word as an accent. More than one turns the accent into the voice. Never in title, description, cover or on-frame text"
+    "why": "off by default; a channel may allow one strong word as an accent. More than one turns the accent into the voice. Never in title, description, cover or on-frame text. Captions show `maskAs` instead (ShortsTemplate masks the listed words by default)"
   },
   "bannedPhrases": {
     "value": [
-      "let's dive in", "dive into", "deep dive", "did you know", "you won't believe",
-      "believe it or not", "the truth is", "the answer may surprise you", "it turns out",
-      "here's the thing", "but that's not all", "what happens next", "journey",
-      "fascinating", "mind-blowing", "mind blowing", "incredible", "unbelievable",
-      "shocking", "jaw-dropping", "game-changer", "game changer", "delve", "tapestry",
-      "a testament to", "in a world where", "imagine a world", "picture this",
-      "buckle up", "without further ado", "stay tuned", "let's explore",
-      "let's take a look", "let's find out", "hidden gem", "unlock the secrets",
-      "the secret behind", "at the end of the day", "needless to say",
-      "it's important to note", "it is worth noting", "in conclusion", "furthermore",
-      "moreover", "additionally", "that being said", "simply put", "in other words",
-      "science has proven", "click the link", "link in bio"
+      "let's dive in",
+      "dive into",
+      "deep dive",
+      "did you know",
+      "you won't believe",
+      "believe it or not",
+      "the truth is",
+      "the answer may surprise you",
+      "it turns out",
+      "here's the thing",
+      "but that's not all",
+      "what happens next",
+      "journey",
+      "fascinating",
+      "mind-blowing",
+      "mind blowing",
+      "incredible",
+      "unbelievable",
+      "shocking",
+      "jaw-dropping",
+      "game-changer",
+      "game changer",
+      "delve",
+      "tapestry",
+      "a testament to",
+      "in a world where",
+      "imagine a world",
+      "picture this",
+      "buckle up",
+      "without further ado",
+      "stay tuned",
+      "let's explore",
+      "let's take a look",
+      "let's find out",
+      "hidden gem",
+      "unlock the secrets",
+      "the secret behind",
+      "at the end of the day",
+      "needless to say",
+      "it's important to note",
+      "it is worth noting",
+      "in conclusion",
+      "furthermore",
+      "moreover",
+      "additionally",
+      "that being said",
+      "simply put",
+      "in other words",
+      "science has proven",
+      "click the link",
+      "link in bio"
     ],
     "rule": "§3b",
     "why": "hype, essay joints and trailer wrapping: the places where channels sound identical. Large channels use each in 0-4% of videos"
   },
   "intensifiers": {
-    "value": ["really", "truly", "extremely", "incredibly", "absolutely", "literally", "totally", "not only"],
+    "value": [
+      "really",
+      "truly",
+      "extremely",
+      "incredibly",
+      "absolutely",
+      "literally",
+      "totally",
+      "not only"
+    ],
     "rule": "§3b",
     "why": "an adjective the viewer cannot check, next to a real number, weakens the number"
   },
@@ -219,20 +291,42 @@
   },
   "hookOnlyPhrases": {
     "value": [
-      "hello", "hi everyone", "hey guys", "welcome", "in this video", "in today's video",
-      "today we", "subscribe", "don't forget", "hit the bell", "before we start",
-      "before we begin", "today's story"
+      "hello",
+      "hi everyone",
+      "hey guys",
+      "welcome",
+      "in this video",
+      "in today's video",
+      "today we",
+      "subscribe",
+      "don't forget",
+      "hit the bell",
+      "before we start",
+      "before we begin",
+      "today's story"
     ],
     "rule": "§3b",
     "why": "long-lived channels greet and ask to subscribe mid-video; only the first seconds are too expensive for it"
   },
   "bannedMarks": {
-    "value": [":", "—", "–", " - ", "etc."],
+    "value": [
+      ":",
+      "—",
+      "–",
+      " - ",
+      "etc."
+    ],
     "rule": "§3b",
     "why": "spoken text becomes captions; these read as an outline and create no pause for the voice"
   },
   "silentPunctuation": {
-    "value": [",", ";", ":", "—", "–"],
+    "value": [
+      ",",
+      ";",
+      ":",
+      "—",
+      "–"
+    ],
     "rule": "§4",
     "why": "the pause pipeline only breaks on . ! ? ; these marks create zero silence"
   },
@@ -242,7 +336,16 @@
     "why": "a sentence already over the limit that leans on commas means the writer thought the comma made a pause"
   },
   "pronounOpeners": {
-    "value": ["it", "this", "that", "they", "these", "those", "he", "she"],
+    "value": [
+      "it",
+      "this",
+      "that",
+      "they",
+      "these",
+      "those",
+      "he",
+      "she"
+    ],
     "rule": "§3b",
     "why": "the first sentence of each scene names its subject; mid-scene pronouns are fine"
   },
@@ -262,7 +365,15 @@
     "why": "a payoff sharing distinct four-word phrases with 2+ body scenes is recapping. Warn only (it can be a deliberate callback)"
   },
   "sourceOnlyEndings": {
-    "value": ["recalls", "reports", "according to", "says so", "wrote", "told us", "notes"],
+    "value": [
+      "recalls",
+      "reports",
+      "according to",
+      "says so",
+      "wrote",
+      "told us",
+      "notes"
+    ],
     "rule": "§3c",
     "why": "a sentence that ends on a reporting verb usually carries nothing but its source; matching the ending is narrower than matching words"
   },
@@ -282,12 +393,27 @@
     "why": "three consecutive sentences opening with the same word are an outline in story costume"
   },
   "universalWords": {
-    "value": ["everyone", "everybody", "nobody", "always", "never", "all of us", "humans are wired", "by nature", "instinct", "science has proven", "it is proven"],
+    "value": [
+      "everyone",
+      "everybody",
+      "nobody",
+      "always",
+      "never",
+      "all of us",
+      "humans are wired",
+      "by nature",
+      "instinct",
+      "science has proven",
+      "it is proven"
+    ],
     "rule": "§9",
     "why": "a scene resting only on single-study or review evidence may not speak for all of humanity"
   },
   "weakEvidenceLevels": {
-    "value": ["single-study", "review"],
+    "value": [
+      "single-study",
+      "review"
+    ],
     "rule": "§9",
     "why": "evidence levels that do not allow universal words"
   },
@@ -312,7 +438,28 @@
     "why": "platform caption cap; hashtags count toward it"
   },
   "footageFillers": {
-    "value": {"en": ["um", "uh", "uhm", "erm", "er", "hmm", "mm"], "vi": ["ừm", "ừ", "ờ", "ơ", "à", "ạ", "ầy", "hừm", "ưm"]},
+    "value": {
+      "en": [
+        "um",
+        "uh",
+        "uhm",
+        "erm",
+        "er",
+        "hmm",
+        "mm"
+      ],
+      "vi": [
+        "ừm",
+        "ừ",
+        "ờ",
+        "ơ",
+        "à",
+        "ạ",
+        "ầy",
+        "hừm",
+        "ưm"
+      ]
+    },
     "rule": "§5j",
     "why": "single-word filler sounds `bun run cut` proposes to remove; a phrase filler (\"kiểu là\", \"you know\") is a judgement, cut it by hand"
   },
@@ -342,7 +489,26 @@
     "why": "a join louder than this cuts through a syllable; the same quiet threshold `bun run tts` uses between lines (§4)"
   },
   "footageCtaPhrases": {
-    "value": {"en": ["follow", "subscribe", "like and share", "comment below", "link in bio", "hit the bell"], "vi": ["theo dõi", "đăng ký", "bấm follow", "nhấn follow", "để lại bình luận", "comment bên dưới", "link ở bio", "chia sẻ video"]},
+    "value": {
+      "en": [
+        "follow",
+        "subscribe",
+        "like and share",
+        "comment below",
+        "link in bio",
+        "hit the bell"
+      ],
+      "vi": [
+        "theo dõi",
+        "đăng ký",
+        "bấm follow",
+        "nhấn follow",
+        "để lại bình luận",
+        "comment bên dưới",
+        "link ở bio",
+        "chia sẻ video"
+      ]
+    },
     "rule": "§1",
     "why": "a filmed video that ends on a call to action ends on a logo in words; cut to the turn"
   },
@@ -352,7 +518,10 @@
     "why": "an effect whose top edge is less than this above the declared face band would hang over the face; lint knows only top edges, the still review checks the rest"
   },
   "effectsPerMinute": {
-    "value": [4, 10],
+    "value": [
+      4,
+      10
+    ],
     "rule": "§5j",
     "why": "shared effects (caption, marks, chart) per minute of a talking-head video: fewer is a static selfie, more is noise over the person"
   },
@@ -372,12 +541,66 @@
     "why": "below this many words two clips share too few runs to call one a re-take of the other"
   },
   "whisperHallucinations": {
-    "value": {"vi": ["ghiền mì gõ", "hãy subscribe cho kênh", "đừng quên đăng ký kênh", "cảm ơn các bạn đã theo dõi", "hẹn gặp lại các bạn trong những video tiếp theo"], "en": ["thanks for watching", "thank you for watching", "please subscribe", "subscribe to my channel", "like and subscribe"]},
+    "value": {
+      "vi": [
+        "ghiền mì gõ",
+        "hãy subscribe cho kênh",
+        "đừng quên đăng ký kênh",
+        "cảm ơn các bạn đã theo dõi",
+        "hẹn gặp lại các bạn trong những video tiếp theo"
+      ],
+      "en": [
+        "thanks for watching",
+        "thank you for watching",
+        "please subscribe",
+        "subscribe to my channel",
+        "like and subscribe"
+      ]
+    },
     "rule": "§5j",
     "why": "phrases Whisper invents over silence or noise; on the first multi-clip test it wrote 'Hãy subscribe cho kênh Ghiền Mì Gõ' over a clip that never said it. Words in them are marked unsure so the speaker confirms them"
   },
   "sentenceOpeners": {
-    "value": {"vi": ["và", "thì", "nhưng", "nhưng mà", "nếu", "tức", "tuy", "còn", "mà", "hoặc", "cũng", "đó", "đây", "vậy", "hãy", "nhớ", "đừng", "sau", "trước", "khi", "bởi", "vì", "nói", "không"], "en": ["and", "but", "so", "then", "if", "because", "now", "this", "that", "so,"]},
+    "value": {
+      "vi": [
+        "và",
+        "thì",
+        "nhưng",
+        "nhưng mà",
+        "nếu",
+        "tức",
+        "tuy",
+        "còn",
+        "mà",
+        "hoặc",
+        "cũng",
+        "đó",
+        "đây",
+        "vậy",
+        "hãy",
+        "nhớ",
+        "đừng",
+        "sau",
+        "trước",
+        "khi",
+        "bởi",
+        "vì",
+        "nói",
+        "không"
+      ],
+      "en": [
+        "and",
+        "but",
+        "so",
+        "then",
+        "if",
+        "because",
+        "now",
+        "this",
+        "that",
+        "so,"
+      ]
+    },
     "rule": "§5j",
     "why": "a transcript with no full stops is split into lines at these words when capitalised, even right after a name (\"Sài Gòn Thì …\"); names never are"
   }

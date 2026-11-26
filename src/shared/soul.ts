@@ -28,3 +28,7 @@ export const SOUL = {
   outroHoldSeconds: value<[number, number]>("outroHoldSeconds", [3, 4]),
   coverCropRatio: value("coverCropRatio", 1.29),
 } as const;
+
+const strong = value<{words?: string[]; maskAs?: string}>("strongWords", {});
+/** §1b: each channel strong word → what captions show instead (`maskAs`, default "…"). */
+export const STRONG_WORD_MASK: Record<string, string> = Object.fromEntries((strong.words ?? []).map((w) => [w.toLowerCase(), strong.maskAs ?? "…"]));

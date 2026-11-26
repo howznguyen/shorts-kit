@@ -5,6 +5,7 @@ import {Sfx, type SfxCue} from "../audio/Sfx";
 import {Captions} from "../caption/Captions";
 import {clamp} from "../motion/anim";
 import type {Palette} from "../theme";
+import {STRONG_WORD_MASK} from "../soul";
 import {sceneTimings, wordsInScene, type SceneWord, type Voice} from "../timings";
 import {Backdrop} from "./Backdrop";
 import {SafeZones} from "./SafeZones";
@@ -59,7 +60,11 @@ export const ShortsTemplate: React.FC<{
   sfx?: readonly SfxCue[];
   /** Drawn under every scene. Defaults to the shared Backdrop; pass null for none. */
   background?: React.ReactNode;
-}> = ({voice, fps, outroHold, scenes, palette, safe = false, captions = true, watermark, music, sfx, background}) => {
+  /** Strong words masked in the captions (§1b). Default: the channel list in thresholds.json `strongWords`. */
+  captionMask?: Record<string, string>;
+  /** Drawn above the scenes and under the captions (a chapter HUD, a credit line). */
+  overlay?: React.ReactNode;
+}> = ({voice, fps, outroHold, scenes, palette, safe = false, captions = true, watermark, music, sfx, background, captionMask = STRONG_WORD_MASK, overlay}) => {
   const timings = sceneTimings(voice, fps, outroHold);
   for (const t of timings) {
     if (!scenes[t.id]) {
@@ -83,7 +88,8 @@ export const ShortsTemplate: React.FC<{
           </Sequence>
         );
       })}
-      {captions ? <Captions voice={voice} palette={palette} /> : null}
+      {overlay ?? null}
+      {captions ? <Captions voice={voice} palette={palette} mask={captionMask} /> : null}
       {watermark ? <Watermark text={watermark} palette={palette} /> : null}
       {safe ? <SafeZones /> : null}
     </AbsoluteFill>

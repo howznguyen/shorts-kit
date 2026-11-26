@@ -56,7 +56,10 @@ it work comes with it:
 - **Three channels, three treatments.** Audio: said normally. Captions and every
   on-frame text: masked (§7). Text is read by platform filters, OCR, auto-translate
   and screenshots; the voice is not. Title, description, cover, hashtags: **clean**,
-  because strong words there limit distribution and monetisation.
+  because strong words there limit distribution and monetisation. The running
+  captions mask the words listed in `strongWords.words` by themselves: `ShortsTemplate`
+  shows `strongWords.maskAs` instead (pass `captionMask` to override), so the word is
+  never typed into a video's code, where lint would flag it.
 - A second-language caption is something you write, so it is simply never vulgar;
   do not write it dirty and rely on a mask.
 - A video can opt out entirely (grief, victims, mental health): the threshold is a
