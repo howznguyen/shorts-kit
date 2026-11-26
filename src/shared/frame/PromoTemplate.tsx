@@ -5,6 +5,7 @@ import {clamp} from "../motion/anim";
 import {promoFrames, promoTimings, assertPromo, type Promo} from "../promo";
 import type {Palette} from "../theme";
 import {Backdrop} from "./Backdrop";
+import {currentLayer, layerHas} from "./layer";
 import type {SceneComponent} from "./ShortsTemplate";
 import {SafeZones} from "./SafeZones";
 
@@ -82,29 +83,37 @@ export const PromoTemplate: React.FC<{
   for (const t of timings) {
     if (!scenes[t.id]) throw new Error(`Scene "${t.id}" is in promo.json but has no component in scenes.tsx.`);
   }
+  // `bun run export` renders one layer at a time (layer.ts); a promo has no running captions
+  const layer = currentLayer();
+  const has = (part: Parameters<typeof layerHas>[1]) => layerHas(layer, part);
+  const picture = has("picture");
   return (
-    <AbsoluteFill style={{backgroundColor: palette.bg}}>
-      {background === undefined ? <Backdrop palette={palette} /> : background}
-      {promo.music ? <Music promo={promo} fps={fps} total={total} clips={voiceClips} silence={musicSilence} duck={duck} /> : null}
-      {voiceClips.map((c) => (
-        <Sequence key={c.src} from={c.at} durationInFrames={c.frames} name={`voice ${c.src}`}>
-          <Html5Audio src={staticFile(c.src)} volume={c.volume ?? 1} />
-        </Sequence>
-      ))}
-      {sfx?.length ? <Sfx cues={sfx} /> : null}
-      {timings.map((t, i) => {
-        const Scene = scenes[t.id];
-        const fade = i === 0 ? 0 : promo.scenes[i].fade ?? promo.fade ?? 0;
-        const nextFade = i + 1 < timings.length ? promo.scenes[i + 1].fade ?? promo.fade ?? 0 : 0;
-        return (
-          <Sequence key={t.id} from={t.from} durationInFrames={t.duration + nextFade} name={t.id}>
-            <FadeIn frames={fade}>
-              <Scene id={t.id} from={t.from} duration={t.duration} words={[]} palette={palette} />
-            </FadeIn>
-          </Sequence>
-        );
-      })}
-      {safe ? <SafeZones /> : null}
+    <AbsoluteFill style={{backgroundColor: picture ? palette.bg : "transparent"}}>
+      {picture ? (background === undefined ? <Backdrop palette={palette} /> : background) : null}
+      {promo.music && has("music") ? <Music promo={promo} fps={fps} total={total} clips={voiceClips} silence={musicSilence} duck={duck} /> : null}
+      {has("voice")
+        ? voiceClips.map((c) => (
+            <Sequence key={c.src} from={c.at} durationInFrames={c.frames} name={`voice ${c.src}`}>
+              <Html5Audio src={staticFile(c.src)} volume={c.volume ?? 1} />
+            </Sequence>
+          ))
+        : null}
+      {sfx?.length && has("sfx") ? <Sfx cues={sfx} /> : null}
+      {has("scenes")
+        ? timings.map((t, i) => {
+            const Scene = scenes[t.id];
+            const fade = i === 0 ? 0 : promo.scenes[i].fade ?? promo.fade ?? 0;
+            const nextFade = i + 1 < timings.length ? promo.scenes[i + 1].fade ?? promo.fade ?? 0 : 0;
+            return (
+              <Sequence key={t.id} from={t.from} durationInFrames={t.duration + nextFade} name={t.id}>
+                <FadeIn frames={fade}>
+                  <Scene id={t.id} from={t.from} duration={t.duration} words={[]} palette={palette} />
+                </FadeIn>
+              </Sequence>
+            );
+          })
+        : null}
+      {safe && layer === "all" ? <SafeZones /> : null}
     </AbsoluteFill>
   );
 };

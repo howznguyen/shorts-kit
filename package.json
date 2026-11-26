@@ -30,6 +30,7 @@
     "still": "bun scripts/remotion.ts still",
     "render": "bun scripts/remotion.ts render",
     "cover": "bun scripts/remotion.ts cover",
+    "export": "bun scripts/export.ts",
     "normalize": "bun scripts/normalize.ts",
     "encode": "bun scripts/encode.ts",
     "preview": "bun scripts/preview.ts",

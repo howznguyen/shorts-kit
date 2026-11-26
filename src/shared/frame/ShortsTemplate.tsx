@@ -8,6 +8,7 @@ import type {Palette} from "../theme";
 import {STRONG_WORD_MASK} from "../soul";
 import {sceneTimings, wordsInScene, type SceneWord, type Voice} from "../timings";
 import {Backdrop} from "./Backdrop";
+import {currentLayer, layerHas} from "./layer";
 import {SafeZones} from "./SafeZones";
 import {Watermark} from "./Watermark";
 
@@ -41,7 +42,9 @@ const FadeIn: React.FC<{frames: number; children: React.ReactNode}> = ({frames, 
  * 2. a scene id in the script without a component is an error, not a black gap;
  * 3. captions keep their max width and bottom band (§7);
  * 4. the watermark renders AFTER the scene sequences, or scenes paint over it;
- * 5. the music is silent before the outro hold (§8).
+ * 5. the music is silent before the outro hold (§8);
+ * 6. `bun run export` renders one layer at a time (`layer.ts`): picture, captions
+ *    on transparency, or one audio stem.
  *
  * It does not choose shots or pace. That is each video's job.
  */
@@ -71,27 +74,32 @@ export const ShortsTemplate: React.FC<{
       throw new Error(`Scene "${t.id}" is in voice.json but has no component in scenes.tsx.`);
     }
   }
+  const layer = currentLayer();
+  const has = (part: Parameters<typeof layerHas>[1]) => layerHas(layer, part);
+  const picture = has("picture");
   return (
-    <AbsoluteFill style={{backgroundColor: palette.bg}}>
-      {background === undefined ? <Backdrop palette={palette} /> : background}
-      {voice.audio ? <Html5Audio src={staticFile(voice.audio)} /> : null}
-      {music ? <BackgroundMusic src={music.src} volume={music.volume} loop={music.loop} voice={voice} /> : null}
-      {sfx?.length ? <Sfx cues={sfx} /> : null}
-      {timings.map((t, i) => {
-        const Scene = scenes[t.id];
-        const last = i === timings.length - 1;
-        return (
-          <Sequence key={t.id} from={t.from} durationInFrames={t.duration + (last ? 0 : XFADE)} name={t.id}>
-            <FadeIn frames={i === 0 ? 0 : XFADE}>
-              <Scene id={t.id} from={t.from} duration={t.duration} words={wordsInScene(voice, fps, t)} palette={palette} />
-            </FadeIn>
-          </Sequence>
-        );
-      })}
-      {overlay ?? null}
-      {captions ? <Captions voice={voice} palette={palette} mask={captionMask} /> : null}
-      {watermark ? <Watermark text={watermark} palette={palette} /> : null}
-      {safe ? <SafeZones /> : null}
+    <AbsoluteFill style={{backgroundColor: picture ? palette.bg : "transparent"}}>
+      {picture ? (background === undefined ? <Backdrop palette={palette} /> : background) : null}
+      {voice.audio && has("voice") ? <Html5Audio src={staticFile(voice.audio)} /> : null}
+      {music && has("music") ? <BackgroundMusic src={music.src} volume={music.volume} loop={music.loop} voice={voice} /> : null}
+      {sfx?.length && has("sfx") ? <Sfx cues={sfx} /> : null}
+      {has("scenes")
+        ? timings.map((t, i) => {
+            const Scene = scenes[t.id];
+            const last = i === timings.length - 1;
+            return (
+              <Sequence key={t.id} from={t.from} durationInFrames={t.duration + (last ? 0 : XFADE)} name={t.id}>
+                <FadeIn frames={i === 0 ? 0 : XFADE}>
+                  <Scene id={t.id} from={t.from} duration={t.duration} words={wordsInScene(voice, fps, t)} palette={palette} />
+                </FadeIn>
+              </Sequence>
+            );
+          })
+        : null}
+      {picture ? overlay ?? null : null}
+      {captions && has("captions") ? <Captions voice={voice} palette={palette} mask={captionMask} /> : null}
+      {watermark && picture ? <Watermark text={watermark} palette={palette} /> : null}
+      {safe && layer === "all" ? <SafeZones /> : null}
     </AbsoluteFill>
   );
 };

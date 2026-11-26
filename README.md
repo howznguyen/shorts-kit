@@ -218,6 +218,7 @@ that: on a real take it misheard a phrase as a number and dropped whole words.
 | `bun run cover <id>` | `out/<id>/<id>-cover.png` and `.jpg` |
 | `bun run normalize <id>` | loudness to target, `out/<id>/<id>-loud.mp4` |
 | `bun run encode <id>` | yuv420p, BT.709, 48 kHz, faststart: `out/<id>/<id>-upload.mp4` |
+| `bun run export <id> [--comp=X]` | the video as layers for an editor: picture, captions on transparency, voice/music/sfx stems, subtitles, and an FCPXML timeline with scene markers for DaVinci Resolve or Final Cut Pro |
 | `bun run preview [--lan]` | local dashboard; `--lan` adds a token so a phone on your Wi-Fi can open it |
 | `bun run satellite <id>` | satellite mosaics for the shots in `src/videos/<id>/map.json` (EOX, CC BY 4.0) |
 | `bun run geo <id>` | coastlines, borders and rivers for the same area (Natural Earth) |

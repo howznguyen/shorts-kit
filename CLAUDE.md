@@ -51,6 +51,7 @@ bun run render <id>              # out/<id>/<id>.mp4
 bun run cover <id>               # out/<id>/<id>-cover.png
 bun run normalize <id>           # out/<id>/<id>-loud.mp4
 bun run encode <id>              # out/<id>/<id>-upload.mp4
+bun run export <id> [--comp=X]   # out/<id>/export/<comp>/: layers + FCPXML for Resolve / Final Cut
 bun run preview                  # local dashboard: progress, script, storyboard, hand-off
 bun run check                    # boundaries + tsc --noEmit
 ```

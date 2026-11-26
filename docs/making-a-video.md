@@ -35,6 +35,7 @@ from the absence of an error. Three silent-failure shapes that really happened:
 | `bun run cover <id>` | render `out/<id>/<id>-cover.png` (+ jpg) |
 | `bun run normalize <id>` | loudness to target → `out/<id>/<id>-loud.mp4` |
 | `bun run encode <id>` | platform encode → `out/<id>/<id>-upload.mp4` |
+| `bun run export <id> [--comp=X] [--h264] [--reuse]` | layers for an editor → `out/<id>/export/<comp>/`: picture (ProRes), captions on alpha, voice/music/sfx WAV stems, `captions.srt`, and an FCPXML timeline with scene markers (DaVinci Resolve, Final Cut Pro) |
 | `bun run check` | code boundaries + `tsc --noEmit` |
 
 Always run from the repo root.
