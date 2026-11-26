@@ -1,5 +1,27 @@
 # Changelog
 
+## 2.1.0 (2026-11-27)
+
+### Fixed
+- `bun run satellite`: a mosaic that mixed open-ocean tiles with land tiles came out mostly black. Filler and
+  converted ocean tiles are now stored in EOX's own pixel format (yuvj420p), so ffmpeg's tile filter is not rebuilt
+  mid-stream. Delete `.cache/tiles/s2cloudless/` (or re-encode its yuvj444p tiles) to rebuild old caches.
+- `bun run normalize`: loudnorm now aims 0.8 dB below `truePeakMaxDb`, because the AAC re-encode overshoots the
+  true peak by 0.2–0.6 dB and `bun run encode` then failed its true-peak check.
+
+### Added
+- GSAP 3.15.1 on Remotion's clock (§12e): `useGsap` in `src/shared/motion/gsap.ts` builds one paused timeline
+  (time unit: frames) and seeks it every frame; SplitText registered. `bun run check` runs
+  `scripts/check-gsap.ts`, which rejects free tweens, `repeat: -1`, the ticker, ScrollTrigger, callbacks and any
+  `gsap` import outside that file. DrawSVG, MorphSVG, MotionPath, TextPlugin, Physics2D, CustomEase and
+  CustomWiggle registered. Shot cards `typography/gsap-split-words` and `effects/gsap-plugin-reel` (10 s, five
+  plugins) with their demos.
+- Captions mask the channel's strong words by default (§1b): `strongWords.maskAs` in `thresholds.json`,
+  `STRONG_WORD_MASK` in `src/shared/soul.ts`, `mask` on `Captions`, `captionMask` on `ShortsTemplate`.
+- `ShortsTemplate` `overlay`: drawn above the scenes and under the captions (a chapter HUD, a credit line).
+- `ChapterHud` `brand`: the channel avatar (`public/img/avatar.jpg`, new `Avatar` component) left of the
+  channel name.
+
 ## 2.0.0 (2026-11-09)
 
 Product promos join narrated shorts: the same engine, a second pipeline, and the shot and component libraries
